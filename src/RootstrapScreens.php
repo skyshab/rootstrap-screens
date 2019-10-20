@@ -72,7 +72,7 @@ class RootstrapScreens implements Bootable {
      * @since 1.0.0
      * @return void
      */
-    private function init() {
+    public function init() {
 
         $screensArray = [ 'default' => [] ];
         $devices = get_devices();
