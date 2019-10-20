@@ -23,7 +23,7 @@ use function Rootstrap\Devices\get_devices;
  * @since  1.0.0
  * @access public
  */
-class RootstrapScreens extends Bootable {
+class RootstrapScreens implements Bootable {
 
     /**
      * Store instance
