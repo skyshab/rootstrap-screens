@@ -145,7 +145,7 @@ class RootstrapScreens implements Bootable {
         }
 
         // action hook for plugins and child themes to add or remove screens
-        do_action( 'rootstrap/register/screens', $screens );
+        do_action( 'rootstrap/screens/register', $screens );
 
         $this->screens = $screens;
     }
