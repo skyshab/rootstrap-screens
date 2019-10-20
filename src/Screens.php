@@ -14,7 +14,7 @@
 
 namespace Rootstrap\Screens;
 
-use Hybrid\Contracts\Collection;
+use Hybrid\Tools\Collection;
 
 /**
  * Screen collection class.
