@@ -26,12 +26,32 @@ use function Rootstrap\Devices\get_devices;
 class RootstrapScreens extends Bootable {
 
     /**
+     * Store instance
+     */
+    private static $instance = null;
+
+    /**
      * Stores Screens object.
      *
      * @since 1.0.0
      * @var array
      */
     private $screens;
+
+    /**
+     * Get instance.
+     *
+     * Instantiate new instance if one has not already been created.
+     *
+     * @since 1.0.0
+     * @return object
+     */
+    public static function instance(){
+        if(self::$instance == null) {
+            self::$instance = new RootstrapScreens();
+        }
+        return self::$instance;
+    }
 
     /**
      * Load resources.
