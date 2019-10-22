@@ -19,9 +19,7 @@
 		"psr-4" : {
 			"Rootstrap\\Screens\\" : "src/"
 		},
-		"files" : [
-			"src/functions.php"
-		]
+		"files" : []
 	},
 	"require" : {}
 }

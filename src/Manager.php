@@ -15,7 +15,6 @@
 namespace Rootstrap\Screens;
 
 use Hybrid\Contracts\Bootable;
-use function Rootstrap\Devices\get_devices;
 
 /**
  * Creates a new Rootstrap object.
@@ -23,12 +22,7 @@ use function Rootstrap\Devices\get_devices;
  * @since  1.0.0
  * @access public
  */
-class RootstrapScreens implements Bootable {
-
-    /**
-     * Store instance
-     */
-    private static $instance = null;
+class Manager implements Bootable {
 
     /**
      * Stores Screens object.
@@ -39,19 +33,26 @@ class RootstrapScreens implements Bootable {
     private $screens;
 
     /**
-     * Get instance.
-     *
-     * Instantiate new instance if one has not already been created.
+     * Store default vendor path on instantiation.
      *
      * @since 1.0.0
-     * @return object
+     * @param object $vendor_path
+     * @return void
      */
-    public static function instance(){
-        if(self::$instance == null) {
-            self::$instance = new RootstrapScreens();
+    public function __construct($devices = []) {
+
+        $screensArray = $this->generateScreens($devices);
+
+        $screens = new Screens;
+
+        // Create screens from devices
+        foreach( $screensArray as $screen => $args ) {
+            $screens->add( $screen, $args );
         }
-        return self::$instance;
+
+        $this->screens = $screens->all();
     }
+
 
     /**
      * Load resources.
@@ -60,22 +61,20 @@ class RootstrapScreens implements Bootable {
      * @return object
      */
     public function boot() {
-        // Initiate Core Module
-        add_action( 'rootstrap/loaded', [ $this, 'init' ] );
         // Add js data to customizer page
-        add_filter( 'rootstrap/customize-controls/data', [ $this, 'js_data' ] );
+        add_filter( 'rootstrap/customize-controls/data', [ $this, 'getScreensData' ] );
     }
 
     /**
-     * Load Rootstrap Modules when required
+     * Generate screens from devices.
      *
-     * @since 1.0.0
-     * @return void
+     * @since  1.0.0
+     * @access public
+     * @return array  returns array of screens
      */
-    public function init() {
+    private function generateScreens($devices) {
 
         $screensArray = [ 'default' => [] ];
-        $devices = get_devices();
 
         // 'and up' screens loop
         foreach ( $devices as $name => $device ) {
@@ -90,7 +89,6 @@ class RootstrapScreens implements Bootable {
             $screensArray[$id]['min'] = $min;
         }
 
-
         // 'and under' screens loop
         foreach ( $devices as $name => $device ) {
 
@@ -103,7 +101,6 @@ class RootstrapScreens implements Bootable {
 
             $screensArray[$id]['max'] = $max;
         }
-
 
         // generate all possible screen combinations that have both a min and max
         foreach ( $devices as $outer_name => $outer_device ) {
@@ -137,29 +134,7 @@ class RootstrapScreens implements Bootable {
 
         } // end outer loop
 
-        $screens = new Screens;
-
-        // Create screens from devices
-        foreach( $screensArray as $screen => $args ) {
-            $screens->add( $screen, $args );
-        }
-
-        // action hook for plugins and child themes to add or remove screens
-        do_action( 'rootstrap/screens/register', $screens );
-
-        $this->screens = $screens;
-    }
-
-    /**
-     * Get data to make available to JS.
-     *
-     * @since  1.0.0
-     * @access public
-     * @return array  returns array of js data
-     */
-    public function js_data($data) {
-        $data['screens'] = get_screens_data();
-        return $data;
+        return $screensArray;
     }
 
     /**
@@ -170,5 +145,21 @@ class RootstrapScreens implements Bootable {
      */
     public function getScreens() {
         return $this->screens;
+    }
+
+    /**
+     * Get Screens Data
+     *
+     * @since  1.0.0
+     * @access public
+     * @return array
+     */
+    function getScreensData() {
+        $array = [];
+        foreach( $this->getScreens() as $name => $device ) {
+            $array[$name]['min'] = $device->min();
+            $array[$name]['max'] = $device->max();
+        }
+        return $array;
     }
 }
