@@ -1,11 +1,10 @@
 <?php
 /**
- * Rootstrap class.
+ * Rootstrap Screens.
  *
- * This class handles the Rootstrap config data and sets up
- * the individual modules that make up Rootstrap.
+ * This class handles generates screens from a device array.
  *
- * @package   Rootstrap
+ * @package   Rootstrap/Screens
  * @author    Sky Shabatura
  * @copyright Copyright (c) 2019, Sky Shabatura
  * @link      https://github.com/skyshab/rootstrap
@@ -28,31 +27,23 @@ class Manager implements Bootable {
      * Stores Screens object.
      *
      * @since 1.0.0
-     * @var array
+     * @var object
      */
     private $screens;
 
     /**
-     * Store default vendor path on instantiation.
+     * Generate screens from devices on instanstiation.
      *
      * @since 1.0.0
-     * @param object $vendor_path
+     * @param array $devices - devices object to generate screens from.
      * @return void
      */
-    public function __construct($devices = []) {
-
+    public function __construct($devices) {
+        // if an instance of Devices was not passed in, bail.
+        if(!$devices) return;
+        // Generate and store Screens Collection
         $screensArray = $this->generateScreens($devices);
-
-        $screens = new Screens;
-
-        // Create screens from devices
-        foreach( $screensArray as $screen => $args ) {
-            $screens->add( $screen, $args );
-        }
-
-        $this->screens = $screens->all();
     }
-
 
     /**
      * Load resources.
@@ -70,14 +61,15 @@ class Manager implements Bootable {
      *
      * @since  1.0.0
      * @access public
+     * @param object $devices - an instance of Rootstrap/Devices
      * @return array  returns array of screens
      */
     private function generateScreens($devices) {
-
-        $screensArray = [ 'default' => [] ];
+        // Initiate screens array
+        $screens = [ 'default' => [] ];
 
         // 'and up' screens loop
-        foreach ( $devices as $name => $device ) {
+        foreach ( $devices->all() as $name => $device ) {
 
             $min = $device->min();
             $max = $device->max();
@@ -86,7 +78,7 @@ class Manager implements Bootable {
             elseif( $min ) $id  = $name;
             else continue;
 
-            $screensArray[$id]['min'] = $min;
+            $screens[$id]['min'] = $min;
         }
 
         // 'and under' screens loop
@@ -99,7 +91,7 @@ class Manager implements Bootable {
             elseif( $max ) $id  = $name;
             else continue;
 
-            $screensArray[$id]['max'] = $max;
+            $screens[$id]['max'] = $max;
         }
 
         // generate all possible screen combinations that have both a min and max
@@ -123,8 +115,8 @@ class Manager implements Bootable {
                     if( $outer_min_value <= $inner_min_value && $outer_min_value < $inner_max_value ) {
 
                         $id = ( $outer_name === $inner_name ) ? $outer_name : sprintf( '%s-%s', $outer_name, $inner_name );
-                        $screensArray[$id]['min'] = $outer_min;
-                        $screensArray[$id]['max'] = $inner_max;
+                        $screens[$id]['min'] = $outer_min;
+                        $screens[$id]['max'] = $inner_max;
 
                     } // end if max
 
@@ -134,7 +126,16 @@ class Manager implements Bootable {
 
         } // end outer loop
 
-        return $screensArray;
+        // Instantiate new Screens Collection
+        $screens = new Screens;
+
+        // Add screens to Collection
+        foreach( $screens as $screen => $args ) {
+            $screens->add( $screen, $args );
+        }
+
+        // Store the Screens object
+        $this->screens = $screens;
     }
 
     /**
@@ -148,6 +149,17 @@ class Manager implements Bootable {
     }
 
     /**
+     * Get Screens Array
+     *
+     * @since 1.0.0
+     * @return array - Returns array of Screen objects
+     */
+    public function getScreensArray() {
+        $screens = $this->screens;
+        return $screens->all();
+    }
+
+    /**
      * Get Screens Data
      *
      * @since  1.0.0
@@ -156,7 +168,7 @@ class Manager implements Bootable {
      */
     function getScreensData() {
         $array = [];
-        foreach( $this->getScreens() as $name => $device ) {
+        foreach( $this->getScreensArray() as $name => $device ) {
             $array[$name]['min'] = $device->min();
             $array[$name]['max'] = $device->max();
         }
