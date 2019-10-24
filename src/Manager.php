@@ -41,8 +41,20 @@ class Manager implements Bootable {
     public function __construct($devices) {
         // if an instance of Devices was not passed in, bail.
         if(!$devices) return;
+
         // Generate and store Screens Collection
         $screensArray = $this->generateScreens($devices);
+
+        // Instantiate new Screens Collection
+        $screens = new Screens;
+
+        // Add screens to Collection
+        foreach( $screensArray as $screen => $args ) {
+            $screens->add( $screen, $args );
+        }
+
+        // Store the Screens object
+        $this->screens = $screens;
     }
 
     /**
@@ -65,6 +77,7 @@ class Manager implements Bootable {
      * @return array  returns array of screens
      */
     private function generateScreens($devices) {
+
         // Initiate screens array
         $screens = [ 'default' => [] ];
 
@@ -126,16 +139,7 @@ class Manager implements Bootable {
 
         } // end outer loop
 
-        // Instantiate new Screens Collection
-        $screens = new Screens;
-
-        // Add screens to Collection
-        foreach( $screens as $screen => $args ) {
-            $screens->add( $screen, $args );
-        }
-
-        // Store the Screens object
-        $this->screens = $screens;
+        return $screens;
     }
 
     /**
