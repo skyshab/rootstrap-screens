@@ -2,7 +2,7 @@
 /**
  * Rootstrap Screens.
  *
- * This class handles generates screens from a device array.
+ * This class handles responsive breakpoints used in theme styles.
  *
  * @package   Rootstrap/Screens
  * @author    Sky Shabatura
@@ -35,18 +35,17 @@ class Manager implements Bootable {
      * Generate screens from devices on instanstiation.
      *
      * @since 1.0.0
-     * @param array $devices - devices object to generate screens from.
+     * @param array $screens - instance of roostrap screens collection
+     * @param array $devices - devices to generate screens from.
      * @return void
      */
-    public function __construct($devices) {
-        // if an instance of Devices was not passed in, bail.
-        if(!$devices) return;
+    public function __construct($screens, $devices) {
+
+        // if an instances were not passed in, bail.
+        if(! $screens || ! $devices) return;
 
         // Generate and store Screens Collection
         $screensArray = $this->generateScreens($devices);
-
-        // Instantiate new Screens Collection
-        $screens = new Screens;
 
         // Add screens to Collection
         foreach( $screensArray as $screen => $args ) {
