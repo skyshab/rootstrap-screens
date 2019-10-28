@@ -32,19 +32,19 @@ class Manager implements Bootable {
     private $screens;
 
     /**
-     * Generate screens from devices on instanstiation.
+     * Generate Screens from Devices on instanstiation.
      *
      * @since 1.0.0
      * @param array $screens - instance of roostrap screens collection
-     * @param array $devices - devices to generate screens from.
+     * @param array $devices - devices collection to generate screens from.
      * @return void
      */
     public function __construct($screens, $devices) {
 
-        // if an instances were not passed in, bail.
+        // if instances were not passed in, bail.
         if(! $screens || ! $devices) return;
 
-        // Generate and store Screens Collection
+        // Generate array of screens from devices
         $screensArray = $this->generateScreens($devices);
 
         // Add screens to Collection
@@ -52,7 +52,7 @@ class Manager implements Bootable {
             $screens->add( $screen, $args );
         }
 
-        // Store the Screens object
+        // Store the Screens Collection
         $this->screens = $screens;
     }
 
@@ -64,15 +64,15 @@ class Manager implements Bootable {
      */
     public function boot() {
         // Add js data to customizer page
-        add_filter( 'rootstrap/customize-controls/data', [ $this, 'getScreensData' ] );
+        add_filter( 'rootstrap/customize-controls/data', [ $this, 'data' ] );
     }
 
     /**
      * Generate screens from devices.
      *
      * @since  1.0.0
-     * @access public
-     * @param object $devices - an instance of Rootstrap/Devices
+     * @access private
+     * @param object $devices - a Collection of Devices
      * @return array  returns array of screens
      */
     private function generateScreens($devices) {
@@ -142,24 +142,13 @@ class Manager implements Bootable {
     }
 
     /**
-     * Get Screens Object
+     * Get Screens Collection
      *
      * @since 1.0.0
      * @return void
      */
-    public function getScreens() {
+    public function collection() {
         return $this->screens;
-    }
-
-    /**
-     * Get Screens Array
-     *
-     * @since 1.0.0
-     * @return array - Returns array of Screen objects
-     */
-    public function getScreensArray() {
-        $screens = $this->screens;
-        return $screens->all();
     }
 
     /**
@@ -169,9 +158,9 @@ class Manager implements Bootable {
      * @access public
      * @return array
      */
-    function getScreensData() {
+    function data() {
         $array = [];
-        foreach( $this->getScreensArray() as $name => $device ) {
+        foreach( $this->collection()->all() as $name => $device ) {
             $array[$name]['min'] = $device->min();
             $array[$name]['max'] = $device->max();
         }
