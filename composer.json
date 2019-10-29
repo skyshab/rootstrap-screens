@@ -1,8 +1,8 @@
 {
 	"name"        : "skyshab/rootstrap-screens",
-	"description" : "Rootstrap is a collection of utilities for managing WordPress Customizer controls, settings, responsive breakpoints and styles.",
+	"description" : "Rootstrap Screens extends Rootstrap to define media query breakpoints to use in theme styles.",
 	"keywords"    : [ "wordpress" ],
-	"homepage"    : "https://github.com/skyshab/rootstrap",
+	"homepage"    : "https://github.com/skyshab/rootstrap-screens",
 	"license"     : "GPL-2.0-or-later",
 	"authors"     : [
 		{
@@ -13,7 +13,7 @@
 		}
 	],
 	"support" : {
-		"issues" : "https://github.com/skyshab/rootstrap/issues"
+		"issues" : "https://github.com/skyshab/rootstrap-screens/issues"
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -21,5 +21,7 @@
 		},
 		"files" : []
 	},
-	"require" : {}
+	"require" : {
+        "skyshab/rootstrap-devices" : ">=1.0"
+    }
 }

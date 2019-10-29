@@ -14,6 +14,7 @@
 namespace Rootstrap\Screens;
 
 use Hybrid\Contracts\Bootable;
+use Rootstrap\Devices\Devices;
 
 /**
  * Creates a new Rootstrap object.
@@ -24,7 +25,7 @@ use Hybrid\Contracts\Bootable;
 class Manager implements Bootable {
 
     /**
-     * Stores Screens object.
+     * Stores Screens Collection.
      *
      * @since 1.0.0
      * @var object
@@ -35,13 +36,13 @@ class Manager implements Bootable {
      * Generate Screens from Devices on instanstiation.
      *
      * @since 1.0.0
-     * @param array $screens - instance of roostrap screens collection
-     * @param array $devices - devices collection to generate screens from.
+     * @param array $screens - Rootstrap Screens Collection
+     * @param array $devices - Devices Collection to generate screens from.
      * @return void
      */
-    public function __construct($screens, $devices) {
+    public function __construct( Screens $screens, Devices $devices) {
 
-        // if instances were not passed in, bail.
+        // If instances were not passed in, bail.
         if(! $screens || ! $devices) return;
 
         // Generate array of screens from devices
@@ -75,7 +76,7 @@ class Manager implements Bootable {
      * @param object $devices - a Collection of Devices
      * @return array  returns array of screens
      */
-    private function generateScreens($devices) {
+    private function generateScreens( Devices $devices ) {
 
         // Initiate screens array
         $screens = [ 'default' => [] ];
