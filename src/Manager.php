@@ -40,10 +40,13 @@ class Manager implements Bootable {
      * @param array $devices - Devices Collection to generate screens from.
      * @return void
      */
-    public function __construct( Screens $screens, Devices $devices) {
+    public function __construct( Devices $devices) {
 
-        // If instances were not passed in, bail.
-        if(! $screens || ! $devices) return;
+        // If devices were not passed in, bail.
+        if( ! $devices ) return;
+
+        // Create new Screens instance
+        $screens = new Screens();
 
         // Generate array of screens from devices
         $screensArray = $this->generateScreens($devices);
