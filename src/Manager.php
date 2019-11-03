@@ -13,7 +13,6 @@
 
 namespace Rootstrap\Screens;
 
-use Hybrid\Contracts\Bootable;
 use Rootstrap\Devices\Devices;
 
 /**
@@ -22,7 +21,7 @@ use Rootstrap\Devices\Devices;
  * @since  1.0.0
  * @access public
  */
-class Manager implements Bootable {
+class Manager {
 
     /**
      * Stores Screens Collection.
@@ -58,17 +57,6 @@ class Manager implements Bootable {
 
         // Store the Screens Collection
         $this->screens = $screens;
-    }
-
-    /**
-     * Load resources.
-     *
-     * @since 1.0.0
-     * @return object
-     */
-    public function boot() {
-        // Add js data to customizer page
-        add_filter( 'rootstrap/customize-controls/data', [ $this, 'data' ] );
     }
 
     /**
@@ -153,21 +141,5 @@ class Manager implements Bootable {
      */
     public function collection() {
         return $this->screens;
-    }
-
-    /**
-     * Get Screens Data
-     *
-     * @since  1.0.0
-     * @access public
-     * @return array
-     */
-    function data() {
-        $array = [];
-        foreach( $this->collection()->all() as $name => $device ) {
-            $array[$name]['min'] = $device->min();
-            $array[$name]['max'] = $device->max();
-        }
-        return $array;
     }
 }
